@@ -1,0 +1,21 @@
+{
+  "name": "rpi-audio-receiver",
+  "version": "1.0.0",
+  "description": "Raspberry Pi Bluetooth Audio Receiver with HiFiBerry DAC+ ADC Pro",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/derkardamon/rpi-audio-receiver.git"
+  },
+  "keywords": [
+    "raspberry-pi",
+    "bluetooth",
+    "audio",
+    "receiver",
+    "hifiberry",
+    "pipewire",
+    "bluez"
+  ],
+  "author": "",
+  "license": "MIT"
+}

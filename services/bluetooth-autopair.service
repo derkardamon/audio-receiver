@@ -1,0 +1,14 @@
+[Unit]
+Description=Bluetooth Auto-Pair Service
+After=bluetooth.service
+Requires=bluetooth.service
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/local/bin/bluetooth-autopair
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
