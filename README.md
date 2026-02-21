@@ -121,6 +121,12 @@ For comprehensive troubleshooting, see:
 
 ### Quick Fixes
 
+**HiFiBerry not appearing as Card 0 (appearing as Card 2):**
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-card-order.sh
+```
+
 **Audio going to HDMI instead of HiFiBerry:**
 ```bash
 cd ~/audio-receiver
@@ -225,6 +231,8 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 ```
 .
 ├── configs/
+│   ├── alsa/
+│   │   └── alsa-base.conf               # Sound card ordering
 │   ├── bluetooth/
 │   │   └── main.conf                    # BlueZ configuration
 │   ├── pipewire/
@@ -239,6 +247,7 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 ├── scripts/
 │   ├── bluetooth-autopair               # Auto-pairing daemon
 │   ├── check-status.sh                  # System status checker
+│   ├── fix-card-order.sh                # Fix sound card ordering
 │   ├── fix-pipewire.sh                  # PipeWire fix script
 │   ├── unpair-all.sh                    # Remove all pairings
 │   ├── update-config.sh                 # Config updater
