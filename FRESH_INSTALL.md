@@ -183,7 +183,7 @@ ssh pi@192.168.1.xxx
 
 **First-time connection:** You'll see a security warning. Type `yes` to continue.
 
-### 4. Update System (Optional but Recommended)
+### 4. Update System and Install Git (Required)
 
 ```bash
 # Update package lists
@@ -191,6 +191,9 @@ sudo apt-get update
 
 # Upgrade installed packages (this takes 5-10 minutes)
 sudo apt-get upgrade -y
+
+# Install git (required for cloning the repository)
+sudo apt-get install -y git
 ```
 
 ### 5. Configure Raspberry Pi
@@ -355,6 +358,17 @@ cat /boot/config.txt | grep hifiberry
 lsusb
 
 # You should see your Bluetooth adapter listed
+```
+
+### Git Command Not Found
+
+```bash
+# Install git
+sudo apt-get update
+sudo apt-get install -y git
+
+# Verify git is installed
+git --version
 ```
 
 ### Installation Script Fails
