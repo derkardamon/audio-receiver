@@ -6,25 +6,48 @@
 # Set up Bluetooth for auto-pairing
 echo "Setting up Bluetooth auto-pairing..."
 
-# Start bluetoothctl in the background with persistent agent
-(
-    echo "power on"
-    sleep 1
-    echo "agent NoInputNoOutput"
-    sleep 0.5
-    echo "default-agent"
-    sleep 0.5
-    echo "pairable on"
-    sleep 0.5
-    echo "discoverable on"
-    sleep 0.5
-    echo "Agent registered and ready for pairing"
+# Use expect to handle pairing confirmations automatically
+if ! command -v expect &> /dev/null; then
+    echo "Installing expect..."
+    sudo apt-get update && sudo apt-get install -y expect
+fi
 
-    # Keep the agent running
-    while true; do
-        sleep 3600
-    done
-) | bluetoothctl &
+# Create expect script to auto-confirm pairings
+expect -c '
+set timeout -1
+spawn bluetoothctl
+send "power on\r"
+sleep 1
+send "agent on\r"
+sleep 0.5
+send "default-agent\r"
+sleep 0.5
+send "pairable on\r"
+sleep 0.5
+send "discoverable on\r"
+sleep 0.5
+puts "Agent registered and ready for pairing"
+
+expect {
+    "Confirm passkey" {
+        send "yes\r"
+        exp_continue
+    }
+    "Accept pairing" {
+        send "yes\r"
+        exp_continue
+    }
+    "Authorize service" {
+        send "yes\r"
+        exp_continue
+    }
+    "Request confirmation" {
+        send "yes\r"
+        exp_continue
+    }
+    eof
+}
+' &
 
 BT_AGENT_PID=$!
 
