@@ -26,10 +26,11 @@ else
     ((ERRORS++))
 fi
 
-if [ -f "/etc/wireplumber/bluetooth.lua.d/50-bluez-config.lua" ]; then
-    echo "✓ WirePlumber Bluetooth configuration found"
+# WirePlumber 0.5+ uses default config (no custom Bluetooth config needed)
+if command -v wireplumber >/dev/null 2>&1; then
+    echo "✓ WirePlumber installed (uses default Bluetooth config)"
 else
-    echo "✗ WirePlumber Bluetooth configuration missing"
+    echo "✗ WirePlumber not installed"
     ((ERRORS++))
 fi
 
