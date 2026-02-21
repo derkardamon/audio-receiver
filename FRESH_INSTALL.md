@@ -221,6 +221,10 @@ Now you're ready to install the audio receiver software!
 cd ~
 git clone https://github.com/derkardamon/audio-receiver.git
 cd audio-receiver
+
+# Note: If prompted for credentials, press Ctrl+C
+# For public repos, no authentication is needed
+# If the repo is private, you'll need to set up SSH keys or a personal access token
 ```
 
 ### 2. Make Scripts Executable
@@ -369,6 +373,39 @@ sudo apt-get install -y git
 
 # Verify git is installed
 git --version
+```
+
+### Git Authentication Failed
+
+If you see "Authentication failed" when cloning:
+
+```bash
+# The repository may be private or you entered credentials when you shouldn't have
+# For public repos, just press Enter when prompted (don't type username/password)
+
+# If it's a private repository, you have two options:
+
+# Option 1: Use SSH (recommended)
+# First, generate SSH key on Raspberry Pi:
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# Press Enter to accept default location
+# Press Enter twice for no passphrase
+
+# Display public key:
+cat ~/.ssh/id_ed25519.pub
+# Copy this key and add it to GitHub: Settings > SSH and GPG keys > New SSH key
+
+# Then clone with SSH:
+git clone git@github.com:derkardamon/audio-receiver.git
+
+# Option 2: Download ZIP file
+# Go to: https://github.com/derkardamon/audio-receiver
+# Click "Code" > "Download ZIP"
+# Transfer to Raspberry Pi with scp or download directly:
+wget https://github.com/derkardamon/audio-receiver/archive/refs/heads/main.zip
+unzip main.zip
+mv audio-receiver-main audio-receiver
+cd audio-receiver
 ```
 
 ### Installation Script Fails
