@@ -220,8 +220,7 @@ Now you're ready to install the audio receiver software!
 ```bash
 cd ~
 git clone https://github.com/derkardamon/audio-receiver.git
-cd ~
-git clone https://github.com/derkardamon/audio-receiver.git
+cd audio-receiver
 
 # Note: If prompted for credentials, press Ctrl+C
 # For public repos, no authentication is needed
