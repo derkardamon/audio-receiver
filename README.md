@@ -121,23 +121,15 @@ For comprehensive troubleshooting, see:
 
 ### Quick Fixes
 
-**HiFiBerry not appearing as Card 0 (appearing as Card 2):**
+**HiFiBerry not Card 0, audio routing issues, or PipeWire not working:**
 ```bash
 cd ~/audio-receiver
-sudo ./scripts/fix-card-order.sh
+sudo ./scripts/fix-all.sh
 ```
 
-**Audio going to HDMI instead of HiFiBerry:**
-```bash
-cd ~/audio-receiver
-sudo ./scripts/fix-pipewire.sh
-```
-
-**PipeWire errors ("Old configuration format" or timeouts):**
-```bash
-cd ~/audio-receiver
-sudo ./scripts/fix-pipewire.sh
-```
+**Individual fixes:**
+- Card ordering only: `sudo ./scripts/fix-card-order.sh`
+- PipeWire only: `sudo ./scripts/fix-pipewire.sh`
 
 ### Quick Status Checks
 
@@ -247,6 +239,7 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 ├── scripts/
 │   ├── bluetooth-autopair               # Auto-pairing daemon
 │   ├── check-status.sh                  # System status checker
+│   ├── fix-all.sh                       # Complete audio fix (recommended)
 │   ├── fix-card-order.sh                # Fix sound card ordering
 │   ├── fix-pipewire.sh                  # PipeWire fix script
 │   ├── unpair-all.sh                    # Remove all pairings

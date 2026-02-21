@@ -53,6 +53,10 @@ if ! grep -q "blacklist snd_bcm2835" /etc/modprobe.d/raspi-blacklist.conf 2>/dev
     echo "blacklist snd_bcm2835" > /etc/modprobe.d/raspi-blacklist.conf
 fi
 
+# Configure sound card ordering
+echo "Configuring sound card order..."
+cp -f configs/alsa/alsa-base.conf /etc/modprobe.d/alsa-base.conf
+
 # Create configuration directories
 echo "Creating configuration directories..."
 mkdir -p /etc/pipewire
@@ -78,10 +82,15 @@ chmod +x /usr/local/bin/bluetooth-autopair
 
 cp -f services/bluetooth-autopair.service /etc/systemd/system/bluetooth-autopair.service
 
-# Enable PipeWire for system-wide use
+# Enable PipeWire for the user
 echo "Enabling PipeWire..."
 systemctl --global disable pulseaudio.service pulseaudio.socket 2>/dev/null || true
 systemctl --global enable pipewire pipewire-pulse wireplumber
+
+# Enable lingering for the sudo user so PipeWire starts at boot
+if [ -n "$SUDO_USER" ]; then
+    loginctl enable-linger $SUDO_USER
+fi
 
 # Enable Bluetooth services
 echo "Enabling Bluetooth services..."
