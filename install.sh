@@ -54,6 +54,7 @@ fi
 # Copy configuration files
 echo "Installing configuration files..."
 cp -f configs/bluetooth/main.conf /etc/bluetooth/main.conf
+mkdir -p /etc/pipewire
 cp -f configs/pipewire/pipewire.conf /etc/pipewire/pipewire.conf
 cp -f configs/pipewire/pipewire-pulse.conf /etc/pipewire/pipewire-pulse.conf
 
