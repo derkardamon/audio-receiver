@@ -78,7 +78,11 @@ if [ -f "$REPO_ROOT/configs/wireplumber/main.lua.d/51-alsa-hifiberry.lua" ]; the
 fi
 
 echo "Step 6: Setting correct permissions..."
-chown -R "$ACTUAL_USER:$ACTUAL_USER" "$USER_HOME/.config/wireplumber"
+if id "$ACTUAL_USER" &>/dev/null; then
+    chown -R "$ACTUAL_USER:$ACTUAL_USER" "$USER_HOME/.config/wireplumber"
+else
+    echo -e "${YELLOW}Warning: User $ACTUAL_USER not found, skipping chown${NC}"
+fi
 chmod -R 755 "$USER_HOME/.config/wireplumber"
 
 echo "Step 7: Enabling real-time scheduling..."
