@@ -68,6 +68,10 @@ if [ -f "./configs/wireplumber/main.lua.d/50-bluez-config.lua" ]; then
     cp ./configs/wireplumber/main.lua.d/50-bluez-config.lua /home/pi/.config/wireplumber/main.lua.d/
 fi
 
+if [ -f "./configs/wireplumber/main.lua.d/51-alsa-hifiberry.lua" ]; then
+    cp ./configs/wireplumber/main.lua.d/51-alsa-hifiberry.lua /home/pi/.config/wireplumber/main.lua.d/
+fi
+
 echo "Step 6: Setting correct permissions..."
 chown -R pi:pi /home/pi/.config/pipewire
 chown -R pi:pi /home/pi/.config/wireplumber

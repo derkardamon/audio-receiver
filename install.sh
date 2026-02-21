@@ -57,10 +57,13 @@ cp -f configs/bluetooth/main.conf /etc/bluetooth/main.conf
 cp -f configs/pipewire/pipewire.conf /etc/pipewire/pipewire.conf
 cp -f configs/pipewire/pipewire-pulse.conf /etc/pipewire/pipewire-pulse.conf
 
-# Install WirePlumber Bluetooth configuration
+# Install WirePlumber configuration
 echo "Installing WirePlumber configuration..."
 mkdir -p /etc/wireplumber/bluetooth.lua.d
+mkdir -p /etc/wireplumber/main.lua.d
 cp -f configs/wireplumber/bluetooth.lua.d/50-bluez-config.lua /etc/wireplumber/bluetooth.lua.d/50-bluez-config.lua
+cp -f configs/wireplumber/main.lua.d/50-bluez-config.lua /etc/wireplumber/main.lua.d/50-bluez-config.lua
+cp -f configs/wireplumber/main.lua.d/51-alsa-hifiberry.lua /etc/wireplumber/main.lua.d/51-alsa-hifiberry.lua
 
 # Install Bluetooth auto-pair script
 echo "Installing Bluetooth auto-pair service..."

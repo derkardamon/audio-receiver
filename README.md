@@ -115,44 +115,45 @@ dtoverlay=disable-bt
 
 ## Troubleshooting
 
-### Check Bluetooth Status
+For comprehensive troubleshooting, see:
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Complete troubleshooting guide
+- **[AUDIO_ROUTING.md](AUDIO_ROUTING.md)** - Audio routing and configuration guide
+
+### Quick Fixes
+
+**Audio going to HDMI instead of HiFiBerry:**
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-pipewire.sh
+```
+
+**PipeWire errors ("Old configuration format" or timeouts):**
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-pipewire.sh
+```
+
+### Quick Status Checks
 
 ```bash
+# Check all services
+./scripts/check-status.sh
+
+# Verify installation
+./scripts/verify-installation.sh
+
+# Check Bluetooth status
 systemctl status bluetooth
 systemctl status bluetooth-autopair
-```
 
-### Check Audio Devices
+# Check PipeWire status
+systemctl --user status pipewire wireplumber
 
-```bash
+# Check audio devices
 aplay -l
-```
 
-### Check PipeWire Status
-
-```bash
-systemctl --user status pipewire
-systemctl --user status pipewire-pulse
-systemctl --user status wireplumber
-```
-
-### View Bluetooth Devices
-
-```bash
-bluetoothctl devices
-```
-
-### Check Bluetooth Logs
-
-```bash
-journalctl -u bluetooth -f
-```
-
-### Reset Bluetooth
-
-```bash
-sudo systemctl restart bluetooth
-sudo systemctl restart bluetooth-autopair
+# Test audio output
+speaker-test -c2 -t wav
 ```
 
 ## Bluetooth Behavior with Multiple Clients
@@ -208,22 +209,44 @@ Edit `/etc/pipewire/pipewire.conf`:
 default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more stability
 ```
 
+## Documentation
+
+- **[README.md](README.md)** - Main documentation (this file)
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting
+- **[AUDIO_ROUTING.md](AUDIO_ROUTING.md)** - Audio configuration and routing
+- **[HARDWARE.md](HARDWARE.md)** - Hardware compatibility guide
+- **[RPI_SETUP.md](RPI_SETUP.md)** - Raspberry Pi setup guide
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contributing guidelines
+
 ## Project Structure
 
 ```
 .
 ├── configs/
 │   ├── bluetooth/
-│   │   └── main.conf           # BlueZ configuration
-│   └── pipewire/
-│       ├── pipewire.conf       # PipeWire main configuration
-│       └── pipewire-pulse.conf # PulseAudio compatibility
+│   │   └── main.conf                    # BlueZ configuration
+│   ├── pipewire/
+│   │   ├── pipewire.conf                # PipeWire main config
+│   │   └── pipewire-pulse.conf          # PulseAudio compatibility
+│   └── wireplumber/
+│       ├── bluetooth.lua.d/
+│       │   └── 50-bluez-config.lua      # Legacy Bluetooth config
+│       └── main.lua.d/
+│           ├── 50-bluez-config.lua      # Modern Bluetooth config
+│           └── 51-alsa-hifiberry.lua    # HiFiBerry routing
 ├── scripts/
-│   └── bluetooth-autopair      # Auto-pairing script
+│   ├── bluetooth-autopair               # Auto-pairing daemon
+│   ├── check-status.sh                  # System status checker
+│   ├── fix-pipewire.sh                  # PipeWire fix script
+│   ├── unpair-all.sh                    # Remove all pairings
+│   ├── update-config.sh                 # Config updater
+│   └── verify-installation.sh           # Installation verifier
 ├── services/
-│   └── bluetooth-autopair.service  # Systemd service
-├── install.sh                  # Main installation script
-└── README.md                   # This file
+│   └── bluetooth-autopair.service       # Systemd service
+├── install.sh                           # Main installer
+├── uninstall.sh                         # Uninstaller
+└── *.md                                 # Documentation files
 ```
 
 ## License

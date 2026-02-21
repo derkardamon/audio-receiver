@@ -98,6 +98,48 @@ Then restart:
 systemctl --user restart pipewire
 ```
 
+### Audio Goes to HDMI Instead of HiFiBerry
+
+**Symptoms:**
+- `speaker-test` outputs to HDMI
+- HiFiBerry is detected but not used
+- `aplay -l` shows both HDMI and HiFiBerry
+
+**Solution:**
+
+The fix-pipewire script now includes HiFiBerry routing configuration:
+
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-pipewire.sh
+```
+
+**Manual fix:**
+
+```bash
+# Check which devices are available
+aplay -l
+
+# You should see card 0 as sndrpihifiberry
+# Manually test HiFiBerry
+speaker-test -c2 -t wav -D hw:0,0
+
+# If that works, force PipeWire to use HiFiBerry
+pactl set-default-sink alsa_output.platform-soc_sound.stereo-fallback
+```
+
+**Verify the fix:**
+
+```bash
+# List available sinks
+pactl list sinks short
+
+# Test with speaker-test
+speaker-test -c2 -t wav
+
+# Should now output to HiFiBerry, not HDMI
+```
+
 ---
 
 ## Bluetooth Issues
