@@ -39,8 +39,8 @@ Boot your Raspberry Pi and complete initial setup:
 ### 3. Clone Repository
 
 ```bash
-git clone https://github.com/derkardamon/rpi-audio-receiver.git
-cd rpi-audio-receiver
+git clone https://github.com/derkardamon/audio-receiver.git
+cd audio-receiver
 ```
 
 ### 4. Run Installation Script
@@ -253,11 +253,21 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 
 MIT License
 
-## Credits
+## Repository
 
-Based on the original work by:
-- https://github.com/nicokaiser/rpi-audio-receiver
+**GitHub**: https://github.com/derkardamon/audio-receiver
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly on actual hardware
+5. Submit a pull request
+
+For bug reports or feature requests, please open an issue on GitHub.
+
+## Credits
+
+Based on the original work by [nicokaiser/rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)

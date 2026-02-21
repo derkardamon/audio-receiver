@@ -15,8 +15,8 @@ This guide will help you quickly set up your Raspberry Pi as a Bluetooth audio r
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/derkardamon/rpi-audio-receiver.git
-cd rpi-audio-receiver
+git clone https://github.com/derkardamon/audio-receiver.git
+cd audio-receiver
 ```
 
 ### 2. Make Scripts Executable
@@ -59,7 +59,7 @@ After reboot:
 Run the status check script:
 
 ```bash
-cd rpi-audio-receiver
+cd audio-receiver
 chmod +x scripts/check-status.sh
 ./scripts/check-status.sh
 ```
