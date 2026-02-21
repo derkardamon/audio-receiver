@@ -212,6 +212,7 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 ## Documentation
 
 - **[README.md](README.md)** - Main documentation (this file)
+- **[FRESH_INSTALL.md](FRESH_INSTALL.md)** - Complete guide to wipe SD card and install from scratch
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting
 - **[AUDIO_ROUTING.md](AUDIO_ROUTING.md)** - Audio configuration and routing

@@ -10,6 +10,7 @@ This project transforms a Raspberry Pi 4 into a high-quality Bluetooth audio rec
 
 ## Quick Links
 
+- [Fresh Install Guide](FRESH_INSTALL.md) - Complete guide to wipe SD card and start fresh
 - [Installation Guide](README.md) - Complete setup instructions
 - [Quick Start](QUICKSTART.md) - Fast setup guide
 - [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
@@ -97,12 +98,14 @@ sudo reboot
 | File | Description |
 |------|-------------|
 | `README.md` | Main documentation and setup guide |
+| `FRESH_INSTALL.md` | Complete guide to wipe SD card and fresh install |
 | `QUICKSTART.md` | Quick setup instructions |
 | `TROUBLESHOOTING.md` | Comprehensive troubleshooting guide |
 | `AUDIO_ROUTING.md` | Audio routing and configuration details |
 | `HARDWARE.md` | Hardware requirements and compatibility |
 | `RPI_SETUP.md` | Raspberry Pi initial setup guide |
 | `CONTRIBUTING.md` | Contribution guidelines |
+| `PROJECT_SUMMARY.md` | Project overview and structure |
 | `LICENSE` | MIT License |
 
 ## Configuration Files
