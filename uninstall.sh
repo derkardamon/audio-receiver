@@ -20,6 +20,11 @@ systemctl disable bluetooth-autopair 2>/dev/null || true
 echo "Removing configuration files..."
 rm -f /usr/local/bin/bluetooth-autopair
 rm -f /etc/systemd/system/bluetooth-autopair.service
+rm -rf /etc/wireplumber/bluetooth.lua.d
+rm -rf /etc/wireplumber/main.lua.d
+rm -f /etc/pipewire/pipewire.conf
+rm -f /etc/pipewire/pipewire-pulse.conf
+rm -f /etc/modprobe.d/alsa-base.conf
 
 # Restore default Bluetooth configuration
 echo "Restoring default Bluetooth configuration..."

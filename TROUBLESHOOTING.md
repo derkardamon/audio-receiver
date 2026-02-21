@@ -2,6 +2,16 @@
 
 Common issues and solutions for the Raspberry Pi Audio Receiver.
 
+## PipeWire Tools
+
+This project uses **PipeWire** for audio, not PulseAudio. Use these commands:
+
+- `wpctl status` - Show audio devices and streams
+- `wpctl set-default SINK_ID` - Set default output device
+- `wpctl set-volume @DEFAULT_AUDIO_SINK@ 50%` - Control volume
+
+The `pactl` command is for PulseAudio and won't work with PipeWire.
+
 ## Quick Diagnostics
 
 Run these commands first to identify the issue:
@@ -21,10 +31,30 @@ sudo journalctl -u bluetooth-autopair -n 50
 
 ## PipeWire Issues
 
-### Error: "Old configuration format" or "Connection timeout"
+### Error: "Old configuration format detected"
 
 **Symptoms:**
 - `wireplumber: Old configuration format detected`
+- WirePlumber warnings about Lua configuration files
+
+**Solution:**
+
+Modern WirePlumber (0.5+) no longer uses Lua configuration files. These warnings are harmless but can be removed by cleaning up old configs:
+
+```bash
+# Remove old WirePlumber Lua configs if present
+sudo rm -rf /etc/wireplumber/bluetooth.lua.d
+sudo rm -rf /etc/wireplumber/main.lua.d
+
+# Restart WirePlumber
+systemctl --user restart wireplumber
+```
+
+WirePlumber now uses excellent defaults for Bluetooth audio - no custom configuration needed. See `WIREPLUMBER_MODERNIZATION.md` for details.
+
+### Error: "Connection timeout"
+
+**Symptoms:**
 - `pipewire: Connection failure: Timeout`
 - Audio not working after pairing
 
@@ -47,17 +77,9 @@ This script will:
 # Stop services
 systemctl --user stop pipewire pipewire-pulse wireplumber
 
-# Clean configs
-rm -rf ~/.config/pipewire
-rm -rf ~/.config/wireplumber
+# Clean state directories
 rm -rf ~/.local/state/pipewire
 rm -rf ~/.local/state/wireplumber
-
-# Copy fresh configs from repo
-mkdir -p ~/.config/pipewire
-mkdir -p ~/.config/wireplumber/main.lua.d
-cp ~/audio-receiver/configs/pipewire/* ~/.config/pipewire/
-cp ~/audio-receiver/configs/wireplumber/main.lua.d/* ~/.config/wireplumber/main.lua.d/
 
 # Restart
 systemctl --user daemon-reload
@@ -124,15 +146,18 @@ aplay -l
 # Manually test HiFiBerry
 speaker-test -c2 -t wav -D hw:0,0
 
-# If that works, force PipeWire to use HiFiBerry
-pactl set-default-sink alsa_output.platform-soc_sound.stereo-fallback
+# If that works, check PipeWire sinks with wpctl
+wpctl status
+
+# Set default using wpctl (replace ID with your HiFiBerry sink ID)
+wpctl set-default SINK_ID
 ```
 
 **Verify the fix:**
 
 ```bash
-# List available sinks
-pactl list sinks short
+# Check default sink
+wpctl status
 
 # Test with speaker-test
 speaker-test -c2 -t wav
@@ -346,7 +371,7 @@ systemctl --user restart pipewire
 
 3. Try controlling volume from Raspberry Pi:
 ```bash
-pactl set-sink-volume @DEFAULT_SINK@ 50%
+wpctl set-volume @DEFAULT_AUDIO_SINK@ 50%
 ```
 
 ## Connection Issues
@@ -398,7 +423,7 @@ journalctl --user -u pipewire -f
 
 2. Check if bluez_sink is created:
 ```bash
-pactl list sinks short
+wpctl status
 ```
 
 3. Restart Bluetooth and PipeWire:

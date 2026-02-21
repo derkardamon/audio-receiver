@@ -89,6 +89,17 @@ Volume can be controlled from:
 - System volume controls on the device
 - AVRCP protocol allows full volume synchronization
 
+## Troubleshooting
+
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
+
+Quick diagnostic commands:
+- `./scripts/check-status.sh` - Check all services
+- `./scripts/check-audio.sh` - Check audio system
+- `wpctl status` - Show PipeWire devices
+
+**Note:** This project uses PipeWire, not PulseAudio. Use `wpctl` commands instead of `pactl`.
+
 ## Configuration
 
 ### Bluetooth Settings
@@ -209,13 +220,20 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 
 ## Documentation
 
+### Setup & Installation
 - **[README.md](README.md)** - Main documentation (this file)
 - **[FRESH_INSTALL.md](FRESH_INSTALL.md)** - Complete guide to wipe SD card and install from scratch
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting
-- **[AUDIO_ROUTING.md](AUDIO_ROUTING.md)** - Audio configuration and routing
 - **[HARDWARE.md](HARDWARE.md)** - Hardware compatibility guide
 - **[RPI_SETUP.md](RPI_SETUP.md)** - Raspberry Pi setup guide
+
+### Troubleshooting & Configuration
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting
+- **[AUDIO_ROUTING.md](AUDIO_ROUTING.md)** - Audio configuration and routing
+- **[WIREPLUMBER_MODERNIZATION.md](WIREPLUMBER_MODERNIZATION.md)** - WirePlumber configuration update explained
+- **[MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)** - Migrating from older versions
+
+### Contributing
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contributing guidelines
 
 ## Project Structure
@@ -227,18 +245,13 @@ default.clock.quantum = 1024  # Change to 512 for lower latency or 2048 for more
 │   │   └── alsa-base.conf               # Sound card ordering
 │   ├── bluetooth/
 │   │   └── main.conf                    # BlueZ configuration
-│   ├── pipewire/
-│   │   ├── pipewire.conf                # PipeWire main config
-│   │   └── pipewire-pulse.conf          # PulseAudio compatibility
-│   └── wireplumber/
-│       ├── bluetooth.lua.d/
-│       │   └── 50-bluez-config.lua      # Legacy Bluetooth config
-│       └── main.lua.d/
-│           ├── 50-bluez-config.lua      # Modern Bluetooth config
-│           └── 51-alsa-hifiberry.lua    # HiFiBerry routing
+│   └── pipewire/
+│       ├── pipewire.conf                # PipeWire main config
+│       └── pipewire-pulse.conf          # PulseAudio compatibility
 ├── scripts/
 │   ├── bluetooth-autopair               # Auto-pairing daemon
 │   ├── check-status.sh                  # System status checker
+│   ├── check-audio.sh                   # Audio system checker
 │   ├── fix-all.sh                       # Complete audio fix (recommended)
 │   ├── fix-card-order.sh                # Fix sound card ordering
 │   ├── fix-pipewire.sh                  # PipeWire fix script
