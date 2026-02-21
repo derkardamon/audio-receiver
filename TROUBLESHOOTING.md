@@ -1,14 +1,104 @@
 # Troubleshooting Guide
 
-This guide helps you diagnose and fix common issues with the Raspberry Pi Audio Receiver.
+Common issues and solutions for the Raspberry Pi Audio Receiver.
 
-## Table of Contents
+## Quick Diagnostics
 
-- [Bluetooth Issues](#bluetooth-issues)
-- [Audio Issues](#audio-issues)
-- [Connection Issues](#connection-issues)
-- [Performance Issues](#performance-issues)
-- [Service Issues](#service-issues)
+Run these commands first to identify the issue:
+
+```bash
+# Check all services status
+./scripts/check-status.sh
+
+# Verify installation
+./scripts/verify-installation.sh
+
+# View recent errors
+sudo journalctl -u bluetooth-autopair -n 50
+```
+
+---
+
+## PipeWire Issues
+
+### Error: "Old configuration format" or "Connection timeout"
+
+**Symptoms:**
+- `wireplumber: Old configuration format detected`
+- `pipewire: Connection failure: Timeout`
+- Audio not working after pairing
+
+**Solution:**
+
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-pipewire.sh
+```
+
+This script will:
+- Stop all PipeWire services
+- Backup old configurations
+- Install updated configs
+- Restart services properly
+
+**Manual fix if script fails:**
+
+```bash
+# Stop services
+systemctl --user stop pipewire pipewire-pulse wireplumber
+
+# Clean configs
+rm -rf ~/.config/pipewire
+rm -rf ~/.config/wireplumber
+rm -rf ~/.local/state/pipewire
+rm -rf ~/.local/state/wireplumber
+
+# Copy fresh configs from repo
+mkdir -p ~/.config/pipewire
+mkdir -p ~/.config/wireplumber/main.lua.d
+cp ~/audio-receiver/configs/pipewire/* ~/.config/pipewire/
+cp ~/audio-receiver/configs/wireplumber/main.lua.d/* ~/.config/wireplumber/main.lua.d/
+
+# Restart
+systemctl --user daemon-reload
+systemctl --user restart pipewire pipewire-pulse wireplumber
+```
+
+### PipeWire Not Starting
+
+**Check if running:**
+```bash
+systemctl --user status pipewire
+systemctl --user status wireplumber
+```
+
+**Restart services:**
+```bash
+systemctl --user restart pipewire pipewire-pulse wireplumber
+```
+
+**Check for errors:**
+```bash
+journalctl --user -u pipewire -n 50
+journalctl --user -u wireplumber -n 50
+```
+
+### Audio Crackling or Dropouts
+
+**Increase buffer size:**
+
+Edit `~/.config/pipewire/pipewire.conf`:
+```
+default.clock.quantum = 2048
+default.clock.min-quantum = 512
+```
+
+Then restart:
+```bash
+systemctl --user restart pipewire
+```
+
+---
 
 ## Bluetooth Issues
 
