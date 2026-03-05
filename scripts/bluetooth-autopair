@@ -6,4 +6,4 @@
 echo "Starting Bluetooth auto-pair agent..."
 
 # Run the Python agent
-exec python3 "$(dirname \"$0")/bluetooth-autopair.py"
+exec python3 /usr/local/bin/bluetooth-autopair.py
