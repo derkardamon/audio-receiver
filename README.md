@@ -70,10 +70,16 @@ sudo reboot
 ### Connecting Devices
 
 1. On your smartphone or tablet, open Bluetooth settings
-2. Look for device named "RaspberryPi-Audio"
+2. Look for device named "PiuPiu-Audio"
 3. Connect to the device
 4. No pairing code required - connection is automatic
 5. Start playing audio on your device
+
+**Note:** If the device shows with a different name or won't connect, run:
+```bash
+sudo ./scripts/fix-bluetooth-name.sh
+sudo reboot
+```
 
 ### Multiple Devices
 
@@ -139,6 +145,8 @@ sudo ./scripts/fix-all.sh
 ```
 
 **Individual fixes:**
+- Device name/pairing: `sudo ./scripts/fix-bluetooth-name.sh`
+- Pairing issues: `sudo ./scripts/fix-pairing.sh`
 - Card ordering only: `sudo ./scripts/fix-card-order.sh`
 - PipeWire only: `sudo ./scripts/fix-pipewire.sh`
 

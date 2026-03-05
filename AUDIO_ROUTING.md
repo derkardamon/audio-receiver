@@ -48,8 +48,8 @@ card 0: sndrpihifiberry [snd_rpi_hifiberry_dacplusadcpro], device 0: HiFiBerry D
 ### List PipeWire Sinks
 
 ```bash
-piu@piupiu-stream:~ $ pactl list sinks short
-Connection failure: Timeout```
+pactl list sinks short
+```
 
 Expected output should show HiFiBerry as the primary sink:
 ```

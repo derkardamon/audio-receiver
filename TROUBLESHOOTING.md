@@ -169,9 +169,38 @@ speaker-test -c2 -t wav
 
 ## Bluetooth Issues
 
+### Wrong Device Name or "Ignore Device" Error
+
+**Symptoms:**
+- Device appears with wrong name (e.g., "piupiu-stream" instead of "PiuPiu-Audio")
+- Connection fails with "ignore device" message
+- Hostname shows as "localhost"
+
+**Solution:**
+
+Run the device name fix script:
+```bash
+cd ~/audio-receiver
+sudo ./scripts/fix-bluetooth-name.sh
+```
+
+This will:
+- Set system hostname to `piupiu`
+- Configure pretty hostname as `PiuPiu-Audio`
+- Clear Bluetooth cache
+- Update all configuration files
+- Restart Bluetooth services
+
+After running the script, reboot:
+```bash
+sudo reboot
+```
+
+The device should now appear as "PiuPiu-Audio" and accept connections properly.
+
 ### Device Not Discoverable
 
-**Symptoms:** Your phone/tablet cannot find "RaspberryPi-Audio"
+**Symptoms:** Your phone/tablet cannot find "PiuPiu-Audio"
 
 **Solutions:**
 
