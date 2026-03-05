@@ -18,7 +18,7 @@ set timeout -1
 spawn bluetoothctl
 send "power on\r"
 sleep 1
-send "agent on\r"
+send "agent NoInputNoOutput\r"
 sleep 0.5
 send "default-agent\r"
 sleep 0.5
@@ -26,7 +26,7 @@ send "pairable on\r"
 sleep 0.5
 send "discoverable on\r"
 sleep 0.5
-puts "Agent registered and ready for pairing"
+puts "Agent registered and ready for pairing (NoInputNoOutput mode)"
 
 expect {
     "Confirm passkey" {
@@ -55,7 +55,7 @@ echo "Bluetooth auto-pair agent running (PID: $BT_AGENT_PID)"
 echo "Device is discoverable and will auto-pair without PIN"
 
 # Monitor for new device connections
-dbus-monitor --system "type='signal',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path_namespace='/org/bluez'" 2>/dev/null |
+dbus-monitor --system "type='signal',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path_namespace='/org/bluez'\" 2>/dev/null |
 while read -r line; do
     # Check for new device connections or pairing requests
     if echo "$line" | grep -q "org.bluez.Device1"; then
@@ -66,7 +66,7 @@ while read -r line; do
         bluetoothctl devices 2>/dev/null | while read -r _ mac _; do
             if [ -n "$mac" ]; then
                 # Check if device is paired but not trusted
-                info=$(bluetoothctl info "$mac" 2>/dev/null)
+                info=$(bluetoothctl info "$mac\" 2>/dev/null)
                 if echo "$info" | grep -q "Paired: yes"; then
                     if ! echo "$info" | grep -q "Trusted: yes"; then
                         echo "Auto-trusting device: $mac"
