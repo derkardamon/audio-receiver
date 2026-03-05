@@ -3,77 +3,91 @@
 # Bluetooth Auto-Pair Script
 # Automatically pairs and trusts devices without requiring user confirmation
 
-# Set up Bluetooth for auto-pairing
-echo "Setting up Bluetooth auto-pairing..."
+echo "Starting Bluetooth auto-pair agent..."
 
-# Use expect to handle pairing confirmations automatically
-if ! command -v expect &> /dev/null; then
-    echo "Installing expect..."
-    sudo apt-get update && sudo apt-get install -y expect
-fi
+# Simple Python-based Bluetooth agent that accepts all pairings
+python3 - << 'PYTHON_AGENT'
+import dbus
+import dbus.service
+import dbus.mainloop.glib
+from gi.repository import GLib
+import sys
 
-# Create expect script to auto-confirm pairings
-expect -c '
-set timeout -1
-spawn bluetoothctl
-send "power on\r"
-sleep 1
-send "agent NoInputNoOutput\r"
-sleep 0.5
-send "default-agent\r"
-sleep 0.5
-send "pairable on\r"
-sleep 0.5
-send "discoverable on\r"
-sleep 0.5
-puts "Agent registered and ready for pairing (NoInputNoOutput mode)"
+BUS_NAME = 'org.bluez'
+AGENT_INTERFACE = 'org.bluez.Agent1'
+AGENT_PATH = '/org/bluez/agent/autopair'
 
-expect {
-    "Confirm passkey" {
-        send "yes\r"
-        exp_continue
-    }
-    "Accept pairing" {
-        send "yes\r"
-        exp_continue
-    }
-    "Authorize service" {
-        send "yes\r"
-        exp_continue
-    }
-    "Request confirmation" {
-        send "yes\r"
-        exp_continue
-    }
-    eof
-}
-' &
+class AutoPairAgent(dbus.service.Object):
+    """Bluetooth agent that automatically accepts all pairing requests"""
 
-BT_AGENT_PID=$!
+    @dbus.service.method(AGENT_INTERFACE, in_signature="", out_signature="")
+    def Release(self):
+        print("Agent released")
 
-echo "Bluetooth auto-pair agent running (PID: $BT_AGENT_PID)"
-echo "Device is discoverable and will auto-pair without PIN"
+    @dbus.service.method(AGENT_INTERFACE, in_signature="os", out_signature="")
+    def AuthorizeService(self, device, uuid):
+        print(f"Authorizing service for device {device}")
+        return
 
-# Monitor for new device connections
-dbus-monitor --system "type='signal',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path_namespace='/org/bluez'\" 2>/dev/null |
-while read -r line; do
-    # Check for new device connections or pairing requests
-    if echo "$line" | grep -q "org.bluez.Device1"; then
-        # Give some time for the device path to appear
-        sleep 0.5
+    @dbus.service.method(AGENT_INTERFACE, in_signature="o", out_signature="s")
+    def RequestPinCode(self, device):
+        print(f"RequestPinCode for {device} - returning 0000")
+        return "0000"
 
-        # Get all devices and auto-trust new ones
-        bluetoothctl devices 2>/dev/null | while read -r _ mac _; do
-            if [ -n "$mac" ]; then
-                # Check if device is paired but not trusted
-                info=$(bluetoothctl info "$mac\" 2>/dev/null)
-                if echo "$info" | grep -q "Paired: yes"; then
-                    if ! echo "$info" | grep -q "Trusted: yes"; then
-                        echo "Auto-trusting device: $mac"
-                        bt_cmd "trust $mac"
-                    fi
-                fi
-            fi
-        done
-    fi
-done
+    @dbus.service.method(AGENT_INTERFACE, in_signature="o", out_signature="u")
+    def RequestPasskey(self, device):
+        print(f"RequestPasskey for {device} - returning 0")
+        return dbus.UInt32(0)
+
+    @dbus.service.method(AGENT_INTERFACE, in_signature="ouq", out_signature="")
+    def DisplayPasskey(self, device, passkey, entered):
+        print(f"DisplayPasskey for {device}: {passkey:06d}")
+
+    @dbus.service.method(AGENT_INTERFACE, in_signature="os", out_signature="")
+    def DisplayPinCode(self, device, pincode):
+        print(f"DisplayPinCode for {device}: {pincode}")
+
+    @dbus.service.method(AGENT_INTERFACE, in_signature="ou", out_signature="")
+    def RequestConfirmation(self, device, passkey):
+        print(f"RequestConfirmation for {device}: {passkey:06d} - auto-accepting")
+        return
+
+    @dbus.service.method(AGENT_INTERFACE, in_signature="o", out_signature="")
+    def RequestAuthorization(self, device):
+        print(f"RequestAuthorization for {device} - auto-accepting")
+        return
+
+    @dbus.service.method(AGENT_INTERFACE, in_signature="", out_signature="")
+    def Cancel(self):
+        print("Pairing cancelled")
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+
+    bus = dbus.SystemBus()
+
+    # Create and register agent
+    agent = AutoPairAgent(bus, AGENT_PATH)
+
+    # Get agent manager
+    obj = bus.get_object(BUS_NAME, "/org/bluez")
+    manager = dbus.Interface(obj, "org.bluez.AgentManager1")
+
+    # Register agent with NoInputNoOutput capability
+    manager.RegisterAgent(AGENT_PATH, "NoInputNoOutput")
+    manager.RequestDefaultAgent(AGENT_PATH)
+
+    print("Bluetooth auto-pair agent registered successfully")
+    print("Device will auto-accept all pairing requests")
+
+    # Run main loop
+    mainloop = GLib.MainLoop()
+    try:
+        mainloop.run()
+    except KeyboardInterrupt:
+        print("\nShutting down agent...")
+        manager.UnregisterAgent(AGENT_PATH)
+
+if __name__ == '__main__':
+    main()
+PYTHON_AGENT
