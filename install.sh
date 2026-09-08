@@ -27,6 +27,7 @@ apt-get install -y \
     pipewire-pulse \
     libspa-0.2-bluetooth \
     bluez-alsa-utils \
+    rfkill \
     git
 
 # Disable internal Bluetooth
@@ -78,6 +79,11 @@ chmod +x /usr/local/bin/bluetooth-autopair
 
 cp -f services/bluetooth-autopair.service /etc/systemd/system/bluetooth-autopair.service
 
+# Install Bluetooth rfkill-unblock safety service
+# (stops the adapter coming up rfkill-blocked after a bad power-off - see TROUBLESHOOTING.md)
+echo "Installing Bluetooth rfkill-unblock service..."
+cp -f services/piupiu-bt-unblock.service /etc/systemd/system/piupiu-bt-unblock.service
+
 # Enable PipeWire for the user
 echo "Enabling PipeWire..."
 systemctl --global disable pulseaudio.service pulseaudio.socket 2>/dev/null || true
@@ -92,6 +98,7 @@ fi
 echo "Enabling Bluetooth services..."
 systemctl enable bluetooth
 systemctl enable bluetooth-autopair
+systemctl enable piupiu-bt-unblock
 
 # Add user to bluetooth group
 if [ -n "$SUDO_USER" ]; then

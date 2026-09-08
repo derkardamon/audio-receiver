@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-09-08
+
+### Fixed
+- **Bluetooth adapter stuck rfkill-blocked across reboots.** A blind
+  `bluetoothctl power off` / `hciconfig hci0 down` in the fix scripts could leave the
+  adapter soft-blocked; `systemd-rfkill` then restored that block on every boot, so
+  Bluetooth stayed dead while AirPlay kept working. See `TROUBLESHOOTING.md` ->
+  "Bluetooth Dead After Reboot".
+  - `scripts/fix-bluetooth-name.sh`: blind `power off` replaced with `rfkill unblock`
+    + retrying `power on`; the controller-config block no longer aborts under `set -e`
+  - `scripts/fix-bluetooth-visibility.sh`: `hciconfig hci0 down/up` replaced with
+    `rfkill unblock bluetooth`
+
+### Added
+- `services/piupiu-bt-unblock.service` - oneshot unit, `Before=bluetooth.service`,
+  clears any rfkill block (and the persisted state) on every boot
+- `install.sh` now installs the `rfkill` package and enables `piupiu-bt-unblock.service`
+- `.gitignore`
+
 ## [2.0.0] - 2026-02-21
 
 ### Breaking Changes

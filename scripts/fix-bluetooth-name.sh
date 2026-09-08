@@ -87,14 +87,18 @@ echo ""
 
 # 8. Configure Bluetooth controller
 echo -e "${YELLOW}[8/10]${NC} Configuring Bluetooth controller..."
-bluetoothctl power off
-sleep 1
-bluetoothctl power on
-sleep 1
+set +e
+rfkill unblock bluetooth 2>/dev/null
+for f in /var/lib/systemd/rfkill/*bluetooth; do [ -f "$f" ] && echo 0 > "$f"; done 2>/dev/null
+for i in 1 2 3 4 5; do
+    bluetoothctl power on | grep -qE 'succeeded|already' && break
+    sleep 1
+done
 bluetoothctl discoverable on
 bluetoothctl pairable on
 bluetoothctl agent NoInputNoOutput
 bluetoothctl default-agent
+set -e
 echo -e "${GREEN}✓${NC} Controller configured"
 echo ""
 

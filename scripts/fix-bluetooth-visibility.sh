@@ -13,9 +13,8 @@ sudo rm -rf /var/lib/bluetooth/*/cache 2>/dev/null
 
 # Reset the Bluetooth controller
 echo "Resetting Bluetooth controller..."
-sudo hciconfig hci0 down
-sleep 1
-sudo hciconfig hci0 up
+sudo rfkill unblock bluetooth
+sudo sh -c 'for f in /var/lib/systemd/rfkill/*bluetooth; do echo 0 > "$f"; done' 2>/dev/null || true
 
 # Restart Bluetooth service
 echo "Starting Bluetooth service..."

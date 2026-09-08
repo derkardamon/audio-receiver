@@ -169,6 +169,38 @@ speaker-test -c2 -t wav
 
 ## Bluetooth Issues
 
+### Bluetooth Dead After Reboot - Adapter "Powered: no / PowerState: off-blocked"
+
+**Symptoms:**
+- No device can connect over Bluetooth; AirPlay still works
+- `bluetoothctl show` reports `Powered: no` and `PowerState: off-blocked`
+- The problem returns on every reboot
+
+**Cause:** the Bluetooth adapter is soft-blocked by `rfkill`. `systemd-rfkill`
+persists that state under `/var/lib/systemd/rfkill/` and restores it on every boot,
+so `bluetoothd` (even with `AutoEnable=true`) can never power the adapter on. A blind
+`bluetoothctl power off` or `hciconfig hciX down` in a script can leave it like this.
+
+**Fix:**
+```bash
+sudo rfkill unblock bluetooth
+# clear the persisted block so it does not come back on reboot:
+sudo sh -c 'for f in /var/lib/systemd/rfkill/*bluetooth; do echo 0 > "$f"; done'
+bluetoothctl power on
+```
+
+**Prevention:** `piupiu-bt-unblock.service` (installed by `install.sh`) runs
+`rfkill unblock bluetooth` before `bluetooth.service` on every boot. Check it:
+```bash
+systemctl is-enabled piupiu-bt-unblock
+```
+
+If a device then pairs but fails to connect with `br-connection-key-missing`, the
+stored pairing key is stale - remove and re-pair:
+```bash
+bluetoothctl remove AA:BB:CC:DD:EE:FF   # then pair again from the device
+```
+
 ### Wrong Device Name or "Ignore Device" Error
 
 **Symptoms:**

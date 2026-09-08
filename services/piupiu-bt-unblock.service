@@ -1,0 +1,13 @@
+[Unit]
+Description=Ensure Bluetooth is not rfkill-blocked before bluetoothd starts
+Documentation=https://github.com/derkardamon/audio-receiver
+DefaultDependencies=no
+Before=bluetooth.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/rfkill unblock bluetooth
+ExecStart=-/bin/sh -c 'for f in /var/lib/systemd/rfkill/*bluetooth; do echo 0 > "$f"; done'
+
+[Install]
+WantedBy=bluetooth.service
