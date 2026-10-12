@@ -4,13 +4,15 @@ High-quality Bluetooth audio receiver using Raspberry Pi 4B with HiFiBerry DAC+ 
 
 > **Running on Debian 13 (Trixie)?** The box this project was built for
 > now runs [`audio-receiver-trixie-fix`](https://github.com/derkardamon/audio-receiver-trixie-fix),
-> which fixes eight Trixie-specific issues (boot config path, a
+> which fixes eleven Trixie-specific issues (boot config path, a
 > PipeWire-daemon-killing duplicate WirePlumber spawn, Bluetooth
 > discoverability, a competing BlueALSA stack, AirPlay running as the
 > wrong user, WirePlumber's Bluetooth monitor never starting on a
-> headless box, a wrong A2DP role, and PipeWire's ALSA-compat plugin
-> producing no audible output) that this repository does not yet have.
-> This repo stays as the original/reference version.
+> headless box, a wrong A2DP role, PipeWire's ALSA-compat plugin
+> producing no audible output, missing realtime scheduling, the
+> `ondemand` CPU governor's scale-up latency, and Bluetooth pairing never
+> setting `Trusted`) that this repository does not yet have. This repo
+> stays as the original/reference version.
 
 ## Features
 
